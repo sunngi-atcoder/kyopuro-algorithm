@@ -1,3 +1,4 @@
+```
 #ダイクストラ　最短距離リスト出力
 import heapq
 #隣接リスト、頂点の数、スタート地点
@@ -28,3 +29,4 @@ def dijkstra(edges, num_node,sta):
                 heapq.heappush(node_name, [node[min_point] + cost, goal])
     return node
 ####################################################################
+```
