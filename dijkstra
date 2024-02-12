@@ -28,6 +28,7 @@ def dijkstra(edges, num_node,sta):
                 heapq.heappush(node_name, [node[min_point] + cost, goal])
     return node
 ####################################################################
+#ダイクストラ　最短経路出力
 import heapq
 #隣接リスト、頂点数、スタート、ゴールを入れる
 def dijkstra(edges, num_node,sta,Goal):
