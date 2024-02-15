@@ -1,0 +1,33 @@
+#トロポジカルソート
+#隣接リストと入次数リストを入れる
+#N頂点の場合、辺の番号は0~N-1までを想定
+#1~Nの場合は全部マイナス1してずらして🙏
+from collections import deque
+def topological_sort(G, into_num):
+    #入ってくる有向辺を持たないノードを列挙
+    q = deque()
+    #V: 頂点数
+    V=len(G)
+    for i in range(V):
+        if into_num[i]==0:
+            q.append(i)
+    ans = []
+    while q:
+        v = q.popleft()
+        ans.append(v)
+        for adj in G[v]:
+            into_num[adj] -= 1
+            if into_num[adj]==0:
+                q.append(adj)
+    return ans
+
+
+#有向グラフで閉路検出ができる
+G = [[1,2], [2], []]
+into_num = [0,1,2]
+ans = topological_sort(G, into_num) #トポロジカルソート
+#[0, 3, 1, 4, 5, 2]
+if len(ans)==len(G):
+    print('閉路なし') #同じ頂点数なら閉路なし
+else:
+    print('閉路有り') #頂点数が異なると閉路が存在している
