@@ -28,6 +28,13 @@ class unionfind:
   def hantei(self,a,b):
 #真偽値を返す
     return self.root(a)==self.root(b)
+
+#頂点aの含まれる集合の大きさを返す
+  def ohkisa(self,a):
+    root_a=self.root(a)
+    return self.size[root_a]
+
+
 #例
 N,Q=map(int,input().split())
 uf=unionfind(N)
