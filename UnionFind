@@ -1,0 +1,42 @@
+#unionfind
+#頂点の番号＞＝１
+#uf=unionfind(N)の場合、頂点は1~N＋1まで
+class unionfind:
+  def __init__(self,n):
+    self.ne=[-1 for i in range(n+1)]
+    self.size=[1 for i in range(n+1)]
+  
+  def root(self,x):
+    while self.ne[x]!=-1:
+      x=self.ne[x]
+    return x
+  
+  def ketugou(self,a,b):
+    root_a=self.root(a)
+    root_b=self.root(b)
+#違うグループの時のみ
+    if root_a!=root_b:
+#bにくっつける
+      if self.size[root_a]<self.size[root_b]:
+        self.ne[root_a]=root_b
+        self.size[root_b]+=self.size[root_a]
+#aにくっつける
+      else:
+        self.ne[root_b]=root_a
+        self.size[root_a]+=self.size[root_b]
+  
+  def hantei(self,a,b):
+#真偽値を返す
+    return self.root(a)==self.root(b)
+#例
+N,Q=map(int,input().split())
+uf=unionfind(N)
+for i in range(Q):
+  itini,u,v=map(int,input().split())
+  if itini==1:
+    uf.ketugou(u,v)
+  else:
+    if uf.hantei(u,v)==1:
+      print('Yes')
+    else:
+      print('No')
