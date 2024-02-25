@@ -3,8 +3,8 @@ def segfunc(x,y):
 　　　　　　　　　#関数を入れる
     return x+y
 class LazySegTree_RAQ:
-　　　　　　　　#リスト、関数(segfunc)、単位元を入れる
-　　　　　　　　#単位元はある数と単位元を演算しても「ある数」のままになるような数のこと　　　かけ算なら1　足し算なら0
+#リスト、関数(segfunc)、単位元を入れる
+#単位元はある数と単位元を演算しても「ある数」のままになるような数のこと　　　かけ算なら1　足し算なら0
     def __init__(self,init_val,segfunc,ide_ele):
         n = len(init_val)
         self.segfunc = segfunc
@@ -41,7 +41,7 @@ class LazySegTree_RAQ:
             self.lazy[2*i+1] += v
             self.tree[2*i] += v
             self.tree[2*i+1] += v
-　　　　　　　　#区間全体に加算するのに使う、半開区間[l,r)に対して
+#区間全体に加算するのに使う、半開区間[l,r)に対して
     def add(self,l,r,x):
         ids = self.gindex(l,r)
         l += self.num
@@ -58,7 +58,7 @@ class LazySegTree_RAQ:
             l >>= 1
         for i in ids:
             self.tree[i] = self.segfunc(self.tree[2*i], self.tree[2*i+1]) + self.lazy[i]
-　　　　　　　　　#半開区間[l,r)に対して
+#半開区間[l,r)に対して
     def query(self,l,r):
         self.propagates(*self.gindex(l,r))
         res = self.ide_ele
@@ -76,11 +76,11 @@ class LazySegTree_RAQ:
 
 #区間更新##################################################################
 def segfunc(x,y):
-　　　　　　　　#関数を入れる
+#関数を入れる
     return min(x,y)
 class LazySegTree_RUQ:
-    #リスト、関数(segfunc)、単位元を入れる
-　　　　　　　　#単位元はある数と単位元を演算しても「ある数」のままになるような数のこと　　　かけ算なら1　足し算なら0
+#リスト、関数(segfunc)、単位元を入れる
+#単位元はある数と単位元を演算しても「ある数」のままになるような数のこと　　　かけ算なら1　足し算なら0
     def __init__(self,init_val,segfunc,ide_ele):
         n = len(init_val)
         self.segfunc = segfunc
@@ -117,7 +117,7 @@ class LazySegTree_RUQ:
             self.lazy[2*i+1] = v
             self.tree[2*i] = v
             self.tree[2*i+1] = v
-　　　　　　　　#半開区間[l,r)の要素を全てxにする
+#半開区間[l,r)の要素を全てxにする
     def update(self,l,r,x):
         ids = self.gindex(l,r)
         self.propagates(*self.gindex(l,r))
@@ -135,7 +135,7 @@ class LazySegTree_RUQ:
             l >>= 1
         for i in ids:
             self.tree[i] = self.segfunc(self.tree[2*i], self.tree[2*i+1])
-    #半開区間[l,r)について
+#半開区間[l,r)について
     def query(self,l,r):
         ids = self.gindex(l,r)
         self.propagates(*self.gindex(l,r))
