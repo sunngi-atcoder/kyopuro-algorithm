@@ -1,0 +1,50 @@
+#計算量はO(NM)、N頂点、M辺の場合
+#負辺がある場合はダイクストラ使えないからこっち
+import sys
+
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
+
+    #add_edgeでclassの中のリストに辺の情報を加える
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
+    #ベルマンフォードするときはスタート地点を入れる
+    def bellman_ford(self, src):
+        # 距離を無限大に初期化
+        dist = [float("inf")] * self.V
+        dist[src] = 0
+
+        # 最短経路を求める
+        for _ in range(self.V - 1):
+            for u, v, w in self.graph:
+                if dist[u] != float("inf") and dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+
+        # 負の閉路があるかをチェック
+        for u, v, w in self.graph:
+            if dist[u] != float("inf") and dist[u] + w < dist[v]:
+                print("負の閉路が存在します。")
+                return
+
+        # 最短経路を表示
+        print("頂点の最短距離:")
+        for i in range(self.V):
+            print(f"{i}からの距離: {dist[i]}")
+
+#例
+# サンプルグラフの作成
+g = Graph(5)
+g.add_edge(0, 1, -1)
+g.add_edge(0, 2, 4)
+g.add_edge(1, 2, 3)
+g.add_edge(1, 3, 2)
+g.add_edge(1, 4, 2)
+g.add_edge(3, 2, 5)
+g.add_edge(3, 1, 1)
+g.add_edge(4, 3, -3)
+
+# ベルマンフォード法の実行
+src = 0
+g.bellman_ford(src)
