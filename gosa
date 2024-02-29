@@ -1,0 +1,11 @@
+from fractions import Fraction
+print(Fraction(str(10**18+9))//Fraction('2'))
+
+#math.floorとceilは10**16超えると誤差が出てくるから下の方法で回避
+import math
+      
+math.floor(x)
+-> x // 1
+
+math.ceil(x)
+-> -(-x // 1)
