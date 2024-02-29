@@ -1,0 +1,7 @@
+#確率のmodは足し算とか引き算とか掛け算とかmodのままできる
+
+#3141/5926
+mod = 998244353
+denominator = pow(5926, -1, mod)
+print(3141 * denominator % mod)
+# -> 894983505
