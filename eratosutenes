@@ -32,9 +32,6 @@ def sieve_of_eratosthenes(n): #エラトステネスのふるい
 ri=sieve_of_eratosthenes(2*(10**5))
 def prime_factorize(n):
   a = []
-  while n % 2 == 0:
-    a.append(2)
-    n //= 2
   now=0
   f=ri[now]
   while f * f <= n:
