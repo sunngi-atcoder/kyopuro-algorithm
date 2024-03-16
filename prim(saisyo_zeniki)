@@ -1,0 +1,32 @@
+import heapq
+#プリム法、最小全域木の木のコストを調べる
+def prim(G):
+    """
+    G: 隣接グラフ
+    G := [ [(v_0, cost_0), (v_1,cost_1),..], [(v_2, cost_2)],...]
+
+    返り値 ans :最小全域木の重みの総和
+    """
+    #頂点は1~N
+    ans = 0 #答えの初期値、全域木の最小値
+    V = len(G) #頂点数
+    used = [False for i in range(V)] #探索済/未探索かを判定
+
+    #出発地点(番号1)を初期化
+    used[1] = 1
+    que = [(cost, v) for v,cost in G[1]]
+    
+    heapq.heapify(que)
+    while que:
+        cost_v, v = heapq.heappop(que)
+        if used[v] == 1:
+            continue
+        
+        used[v] = 1 #vを探索済みにする
+        ans += cost_v
+        for nxt, cost_nxt in G[v]:
+            if used[nxt] == True:
+                continue
+
+            heapq.heappush(que, (cost_nxt, nxt))
+    return ans
