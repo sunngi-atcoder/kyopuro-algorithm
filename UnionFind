@@ -5,6 +5,7 @@ class unionfind:
   def __init__(self,n):
     self.ne=[-1 for i in range(n+1)]
     self.size=[1 for i in range(n+1)]
+    self.hen=[0 for i in range(n+1)]
   
   def root(self,x):
     while self.ne[x]!=-1:
@@ -14,16 +15,20 @@ class unionfind:
   def ketugou(self,a,b):
     root_a=self.root(a)
     root_b=self.root(b)
+    self.hen[a]+=1
+    self.hen[b]+=1
 #違うグループの時のみ
     if root_a!=root_b:
 #bにくっつける
       if self.size[root_a]<self.size[root_b]:
         self.ne[root_a]=root_b
         self.size[root_b]+=self.size[root_a]
+        self.hen[root_b]+=self.hen[root_a]
 #aにくっつける
       else:
         self.ne[root_b]=root_a
         self.size[root_a]+=self.size[root_b]
+        self.hen[root_a]+=self.hen[root_b]
   
   def hantei(self,a,b):
 #真偽値を返す
@@ -33,6 +38,9 @@ class unionfind:
   def ohkisa(self,a):
     root_a=self.root(a)
     return self.size[root_a]
+  def hensu(self,a):
+    root_a=self.root(a)
+    return self.hen[root_a]
 
 
 #例
