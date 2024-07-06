@@ -5,3 +5,10 @@ mod = 998244353
 denominator = pow(5926, -1, mod)
 print(3141 * denominator % mod)
 # -> 894983505
+
+#48/81のmodを求める関数
+def R(c,m):
+    mod = 998244353
+    denominator = pow(m, -1, mod)
+    return c * denominator % mod
+print(R(48,81))
