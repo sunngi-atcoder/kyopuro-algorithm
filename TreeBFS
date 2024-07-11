@@ -1,0 +1,16 @@
+辺のコストありver####################################
+#普通の幅優先探索(木のやつ)
+dist=[-1]*(N+1)
+dist[sta]=0
+Q=deque()
+Q.append(sta)
+while len(Q)>=1:
+    pos=Q.popleft()#キューQの先頭要素を取り除き、その値をposに代入する
+    for nex,cost in G[pos]:
+        if dist[nex] == -1:
+            dist[nex]=dist[pos]+cost
+            Q.append(nex)
+#distにstaからの距離が入る
+#####################################
+
+#辺のコスト全て1ならcostのところを1にすればおk
