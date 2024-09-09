@@ -23,7 +23,7 @@ import bisect
 #bisect_rightになる
 def longest(seq):
     LIS = [seq[0]]
-    for i in range(len(seq)):
+    for i in range(1,len(seq)):
         if seq[i] >= LIS[-1]:
             LIS.append(seq[i])
         else:
