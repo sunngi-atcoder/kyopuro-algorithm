@@ -1,1 +1,20 @@
-
+#Xを大きい順にランク付け
+#実装練習では使わない方が良さげ
+#座圧と違うところは、大きい順につけるところ、値の重複があった場合にちゃんと順位形式にできるところ
+#(1位が3つあったらその次は4位みたいな)
+def ranking(X):
+    N=len(X)
+    Ans=[0 for i in range(N)]
+    #[値、インデックス]のリストをソートする
+    Val=[[X[i],i] for i in range(N)]
+    Val.sort(reverse=True)
+    for i in range(N):
+        val=Val[i][0]
+        ind=Val[i][1]
+        if i>0 and val==Val[i-1][0]:
+            Ans[ind]=Ans[Val[i-1][1]]
+        else:
+            Ans[ind]=i+1
+    
+    #元のXの順位付けリスト
+    return Ans
