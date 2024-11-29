@@ -1,8 +1,9 @@
 #時計回りにリストSを回転
 def kaiten(S):
     H,W=len(S),len(S[0])
+    print(H,W)
     New=[["" for i in range(H)] for j in range(W)]
-    for i in range(W):
-        for j in range(H):
-            New[j][W-i-1]=S[i][j]
+    for i in range(H):
+        for j in range(W):
+            New[j][H-i-1]=S[i][j]
     return New
