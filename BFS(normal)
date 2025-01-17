@@ -1,0 +1,28 @@
+#普通の幅優先探索
+from collections import deque
+G='隣接リスト'
+dist=[-1]*(N+1)
+dist[1]=0
+Q=deque()
+Q.append(1)
+while len(Q)>=1:
+    pos=Q.popleft()#キューQの先頭要素を取り除き、その値をposに代入する
+    for nex in G[pos]:
+        if dist[nex] == -1:
+            dist[nex]=dist[pos]+1
+            Q.append(nex)
+# 頂点 1 から各頂点までの最短距離を出力
+for i in range(1,N+1):
+    print(dist[i])
+
+#経路復元#################
+#いける時のみの話...
+sta="スタート地点"
+goal="ゴール地点"
+Keiro=[goal]
+while goal!=sta:
+    for i in G[goal]:
+        if dist[i]==dist[goal]-1:
+            Keiro.append(i)
+            break
+Keiro.reverse()
