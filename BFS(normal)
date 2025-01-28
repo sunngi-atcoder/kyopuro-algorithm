@@ -12,14 +12,24 @@ while len(Q)>=1:
             dist[nex]=dist[pos]+1
             Q.append(nex)
 
-#経路復元、有向グラフの場合#################
+#経路復元、有向グラフの場合###########################################
+#有向グラフだと辺の向き全部逆にしなきゃいけないのう
+G2=[[] for i in range(N+1)]
+for s,t in To:
+    G2[t].append(s)
+#もし経路復元できないなら
+if dist[N]==-1:
+
+
 #いける時のみの話...
-sta="スタート地点"
-goal="ゴール地点"
+sta=1
+goal=N
 Keiro=[goal]
+
 while goal!=sta:
-    for i in G[goal]:
+    for i in G2[goal]:
         if dist[i]==dist[goal]-1:
             Keiro.append(i)
+            goal=i
             break
 Keiro.reverse()
