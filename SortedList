@@ -1,3 +1,4 @@
 https://qiita.com/Shirotsume/items/706742162db68c481c3c
 sortedlistは常にソートされてるから、O(logN)でaddや同じくO(logN)で任意の値をdiscardしても小さい順に値が取れる
 pop、discardもできる　どちらもO(logN)
+from sortedcontainers import SortedSet, SortedList, SortedDict
