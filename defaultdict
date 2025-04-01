@@ -1,0 +1,6 @@
+from collections import defaultdict
+#初期値を1にできる
+d = defaultdict(lambda: 1)
+#中身をdefaultdictにすることもできる
+d = defaultdict(lambda: defaultdict(int))
+d['key']['a'] += 3
