@@ -25,3 +25,35 @@ def make_divisors(n):
                 upper_divisors.append(n//i)
         i += 1
     return lower_divisors + upper_divisors[::-1]
+
+#####################################################################何回も素因数分解する場合はこっち
+#nの素因数分解
+#n以下の素数のリストを返す
+def sieve_of_eratosthenes(n): #エラトステネスのふるい
+  candidate = list(range(2, n+1)) #候補
+  prime = []
+  limit = n**0.5 + 1 #+1がないと平方数を素数にしてしまう
+  while True:
+    p = candidate[0] 
+    if limit <= p:
+      prime.extend(candidate) #この時点での残っているのは素数
+      break
+    prime.append(p)
+    candidate = [i for i in candidate if i % p != 0]
+  return prime
+#数大きかったらもっと大きくする
+ri=sieve_of_eratosthenes(2*(10**5))
+def prime_factorize(n):
+  a = []
+  now=0
+  f=ri[now]
+  while f * f <= n:
+    if n % f == 0:
+      a.append(f)
+      n //= f
+    else:
+      now+=1
+      f=ri[now]
+  if n != 1:
+    a.append(n)
+  return a
