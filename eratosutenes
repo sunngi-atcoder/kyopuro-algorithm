@@ -1,16 +1,16 @@
 #n以下の素数のリストを返す
 def sieve_of_eratosthenes(n): #エラトステネスのふるい
-  candidate = list(range(2, n+1)) #候補
-  prime = []
-  limit = n**0.5 + 1 #+1がないと平方数を素数にしてしまう
-  while True:
-    p = candidate[0] 
-    if limit <= p:
-      prime.extend(candidate) #この時点での残っているのは素数
-      break
-    prime.append(p)
-    candidate = [i for i in candidate if i % p != 0]
-  return prime
+    candidate = list(range(2, n+1)) #候補
+    prime = []
+    limit = n**0.5 + 1 #+1がないと平方数を素数にしてしまう
+    while True:
+        p = candidate[0] 
+        if limit <= p:
+            prime.extend(candidate) #この時点での残っているのは素数
+            break
+        prime.append(p)
+        candidate = [i for i in candidate if i % p != 0]
+    return prime
 
 
 #####################################################################何回も素因数分解する場合はこっち
