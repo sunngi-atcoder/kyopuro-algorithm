@@ -1,3 +1,5 @@
+#左の文字の方が累乗多い
+#abcとかなら,ord(a)*40*40 + ord(b)*40 + ord(c)みたいな
 class RollingHash():
     def __init__(self, s, base, mod):
         self.mod = mod
@@ -8,10 +10,21 @@ class RollingHash():
 
         v = 0
         for i in range(l):
-            h[i+1] = v = (v * base + ord(s[i])) % mod
+            #英小文字想定
+            h[i+1] = v = (v * base + (ord(s[i])-95)) % mod
         v = 1
         for i in range(l):
             pw[i+1] = v = v * base % mod
-
+    #半開区間[l,r)
+    #l以上r未満
     def get(self, l, r):
         return (self.h[r] - self.h[l] * self.pw[r-l]) % self.mod
+
+#例
+N=int(input())
+T=input()
+base=40
+mod=998244353
+
+T_roll=RollingHash(T,base,mod)
+rev_roll=RollingHash(T[::-1],base,mod)
