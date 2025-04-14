@@ -1,42 +1,43 @@
 # 例: 各頂点を根とした場合の最長距離を求める全方位木DPの実装例
-
+#全ての辺について、2通りの部分木情報をくっつける
+#eは関数funcの単位元
+#resは[i]はfunc(dp[i])です
+import sys
+sys.setrecursionlimit(1200000)
 class ReRootingDP:
     def __init__(self, N, graph, e, func, start=0):
-        self.N = N                # 頂点数
-        self.graph = graph        # 隣接リスト形式のグラフ
-        self.e = e                # 単位元 (ここでは 0)
-        self.func = func          # 統合関数 (ここでは max )
-        # 各頂点に対して、各隣接辺に対応する DP 配列を初期化
+        self.N = N
+        self.graph = graph
+        self.e=e
+        self.func = func
+        #dp[i][j]はiが根のときの、j番目の子方向の部分木の情報
         self.dp = [ [e] * len(graph[u]) for u in range(N) ]
+        
         # 各頂点が根になったときの解を格納する配列
-        self.res = [None] * N
-
-        # 下方向への DP を DFS で計算
+        self.res = [e] * N
         self._dfs(start, -1)
-        # 上方向への DP を計算して、各頂点の最終結果を求める
         self._bfs(start, -1, self.e)
-
+    
+    #上を根として、下が子の情報を与える
     def _dfs(self, u, parent):
-        # この頂点 u を根とした部分木からの情報
         acc = self.e
         for i, v in enumerate(self.graph[u]):
             if v == parent:
                 continue
-            # 子 v に対して DFS を行い、返ってきた値に辺の重み 1 を加える
+            #下方向の辺についての情報
             self.dp[u][i] = self._dfs(v, u) + 1
-            # 子方向の値を統合
             acc = self.func(acc, self.dp[u][i])
         return acc
-
+    
+    #下から上の情報を伝える
     def _bfs(self, u, parent, pre_cost):
-        # u に関して、親側からの情報 pre_cost を加えた上で、各隣接辺の結果を統合し、左右累積を計算
         num = len(self.graph[u])
         dp_u = self.dp[u]
-        # 親側の値を、親ノードに対応する位置にセット（必ず1回だけ）
+        #uから親に対して上方向の情報(操作1回)
         for i, v in enumerate(self.graph[u]):
             if v == parent:
                 dp_u[i] = pre_cost + 1
-
+        
         # 左側累積・右側累積の用意
         cum_left  = [self.e] * (num + 1)
         cum_right = [self.e] * (num + 1)
@@ -46,38 +47,10 @@ class ReRootingDP:
             cum_right[i] = self.func(cum_right[i+1], dp_u[i])
         # 最終結果： u を根とした場合の解は、全ての辺の情報を統合したもの
         self.res[u] = cum_left[num]
-
-        # 各子 v に対して、兄弟の情報と親側情報を統合して渡す
+        
+        #自分の子に対して、他の子の情報も考慮した情報を与える
         for i, v in enumerate(self.graph[u]):
             if v == parent:
                 continue
-            # u から v に移動する際、v 以外の部分（cum_left と cum_right の合成）を pre_cost として渡す
             next_pre = self.func(cum_left[i], cum_right[i+1])
             self._bfs(v, u, next_pre)
-
-# 利用例
-if __name__ == '__main__':
-    # 例としての木 (無向グラフ) の隣接リスト
-    # 例えば、次のような木:
-    #      0
-    #     / \
-    #    1   2
-    #   / \
-    #  3   4
-    graph = [
-        [1, 2],     # 頂点 0
-        [0, 3, 4],  # 頂点 1
-        [0],        # 頂点 2
-        [1],        # 頂点 3
-        [1]         # 頂点 4
-    ]
-    N = len(graph)
-    e = 0  # 単位元（何もない場合は距離 0）
-    func = max  # 子側、親側の情報として「最大値」を選ぶ
-
-    # 例では頂点 0 を開始点に選んでいますが、任意の頂点で始めても構いません
-    solver = ReRootingDP(N, graph, e, func, start=0)
-
-    # 各頂点からの最長距離（全方位からの結果）が solver.res に格納されます
-    for i in range(N):
-        print(f"頂点 {i} を根としたときの最長距離: {solver.res[i]}")
