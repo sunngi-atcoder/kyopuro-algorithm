@@ -1,7 +1,6 @@
 #unionfind
 #頂点の番号＞＝１
 #uf=unionfind(N)の場合、頂点は1~N＋1まで
-#重み付きufは、自分の根までいくつプラスになるかを計算する
 class unionfind:
     def __init__(self,n):
         self.ne=[-1 for i in range(n+1)]
@@ -54,3 +53,62 @@ for i in range(Q):
             print('Yes')
         else:
             print('No')
+
+
+#重み付きufは、自分の根までいくつプラスになるかを計算する###########################################
+class unionfind:
+    def __init__(self,n):
+        self.ne=[-1 for i in range(n+1)]
+        self.size=[1 for i in range(n+1)]
+        self.hen=[0 for i in range(n+1)]
+        #pu[i]はiからiの根までいくつプラスになるか
+        self.pu=[0 for i in range(n+1)]
+
+    def root(self,x):
+        while self.ne[x]!=-1:
+            x=self.ne[x]
+        return x
+    
+    #根までいくつプラスになるか計算
+    def kesan(self,x):
+        ans=0
+        while self.ne[x]!=-1:
+            ans+=self.pu[x]
+            x=self.ne[x]
+        return ans
+    #点Aの値-点Bの値=dの点(A,B)の結合
+    def ketugou(self,a,b,d):
+        root_a=self.root(a)
+        root_b=self.root(b)
+        self.hen[a]+=1
+        self.hen[b]+=1
+        #違うグループの時のみ
+        if root_a!=root_b:
+            #bにくっつける
+            if self.size[root_a]<self.size[root_b]:
+                #root_aからbへのベクトル
+                val=-(self.kesan(a)+d)+self.kesan(b)
+                self.ne[root_a]=root_b
+                self.size[root_b]+=self.size[root_a]
+                self.hen[root_b]+=self.hen[root_a]
+                self.pu[root_a]=val
+            #aにくっつける
+            else:
+                val=(self.kesan(a)+d)-self.kesan(b)
+                self.ne[root_b]=root_a
+                self.size[root_a]+=self.size[root_b]
+                self.hen[root_a]+=self.hen[root_b]
+                self.pu[root_b]=val
+
+
+    def hantei(self,a,b):
+        #真偽値を返す
+        return self.root(a)==self.root(b)
+
+    #頂点aの含まれる集合の大きさを返す
+    def ohkisa(self,a):
+        root_a=self.root(a)
+        return self.size[root_a]
+    def hensu(self,a):
+        root_a=self.root(a)
+        return self.hen[root_a]
