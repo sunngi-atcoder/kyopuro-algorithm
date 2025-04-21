@@ -1,6 +1,7 @@
 #unionfind
 #頂点の番号＞＝１
 #uf=unionfind(N)の場合、頂点は1~N＋1まで
+#重み付きufは、自分の根までいくつプラスになるかを計算する
 class unionfind:
     def __init__(self,n):
         self.ne=[-1 for i in range(n+1)]
