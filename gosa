@@ -12,6 +12,15 @@ math.ceil(x)
 #sqrtは誤差出るって話がある
 #そゆ時はisqrtを使う
 
+#四捨五入する際はround()は使わない、roundはちゃんと計算しない
+from decimal import Decimal, ROUND_HALF_UP
+X='四捨五入したい'
+d=Decimal(str(X))
+#整数を丸める
+X = int(d.quantize(Decimal("1E"+str('四捨五入したい桁')), rounding = ROUND_HALF_UP))
+#小数を丸める
+X = d.quantize(Decimal("0.01"), rounding = ROUND_HALF_UP)
+
 ###########################
 誤差を許容できる場合：
 →そのまま計算する
