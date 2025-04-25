@@ -1,3 +1,25 @@
+#ax+b倍したい遅延セグ木
+#遅延配列は遅延してる操作を保持している、値配列と次元が違うのも当然
+from atcoder.lazysegtree import LazySegTree
+A ='元のリスト'
+mod = 998244353
+def func(a, b):
+  return (a + b) % mod
+e = 0
+
+#mappingは遅延している操作を値に反映させる
+def mapping(lu, dd):
+    return (dd * lu[0] + lu[1]) % mod
+#compositionは遅延している操作を下に反映させ遅延を解消するときに、元の操作と新たな操作を合成する
+#ueが上から降りてくる操作、ldが元のやつ
+def composition(ue, ld):
+    return (ue[0]*ld[0]%mod, (ue[0]*ld[1] + ue[1])%mod)
+#1x+0は元の値をそのままにする操作
+_id = (1, 0)
+Lz= LazySegTree(func, e, mapping, composition, _id, A)
+Lz.apply(l-1, r, (X, Y))
+
+
 #区間加算用###################################################################
 def segfunc(x,y):
 　　　　　　　　　#関数を入れる
