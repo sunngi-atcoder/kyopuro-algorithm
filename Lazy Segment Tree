@@ -12,7 +12,7 @@ min_left(r,f)
 #遅延配列は遅延してる操作を保持している、値配列と次元が違うのも当然
 from atcoder.lazysegtree import LazySegTree
 A ='元のリスト'
-mod = 998244353
+
 def func(a, b):
   return (a + b) % mod
 e = 0
