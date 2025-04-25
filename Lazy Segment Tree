@@ -1,3 +1,13 @@
+'''
+set(p,x)でp番目をxにする      (1点更新)
+get(p)でp番目の値を取得        (1点取得)
+prod(l,r)でfunc([l:r])を得る (範囲取得)
+all_prod()                  (全範囲取得)
+apply(l,r,f)で[l:r]にfを作用させる(範囲更新)
+
+max_right(l,f)でlからrまでの取得値がfを満たすような最大のrを返す
+min_left(r,f)
+'''
 #ax+b倍したい遅延セグ木
 #遅延配列は遅延してる操作を保持している、値配列と次元が違うのも当然
 from atcoder.lazysegtree import LazySegTree
@@ -17,10 +27,25 @@ def composition(ue, ld):
 #1x+0は元の値をそのままにする操作
 _id = (1, 0)
 Lz= LazySegTree(func, e, mapping, composition, _id, A)
-Lz.apply(l-1, r, (X, Y))
+#lからrにa倍して+b
+Lz.apply(l,r+1, (a,b))
+
+#範囲全体に+xするセグ木(もうライブラリ持ってるけど)#########################
+from atcoder.lazysegtree import LazySegTree
+def op(a, b):
+    return 0
+e = 0
+def mapping(a, b):
+    return a + b
+def composition(a, b):
+    return a + b
+id_ = 0
+segtree = LazySegTree(op, e, mapping, composition, id_, A)
+#lからrの要素全てにxを足す
+segtree.apply(l, r+1, x)
 
 
-#区間加算用###################################################################
+#区間加算用##########################################################################RAQ
 def segfunc(x,y):
 　　　　　　　　　#関数を入れる
     return x+y
@@ -96,7 +121,7 @@ class LazySegTree_RAQ:
             r >>= 1
         return res
 
-#区間更新##################################################################
+#区間更新##################################################################RUQ
 def segfunc(x,y):
 #関数を入れる
     return min(x,y)
