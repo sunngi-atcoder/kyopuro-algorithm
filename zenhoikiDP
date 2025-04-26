@@ -1,7 +1,12 @@
 # 例: 各頂点を根とした場合の最長距離を求める全方位木DPの実装例
+#例:DP=ReRootingDP(N+1,G(隣接リスト),0,max,1)
 #全ての辺について、2通りの部分木情報をくっつける
 #eは関数funcの単位元
 #resは[i]はfunc(dp[i])です
+'''
+#もしこの例と違う値を求めたいなら細かいところ変えなきゃいけないかも
+'''
+
 import sys
 sys.setrecursionlimit(1200000)
 class ReRootingDP:
