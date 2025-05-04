@@ -17,7 +17,7 @@ class Graph:
         dist = [float("inf")] * self.V
         dist[src] = 0
 
-        # 最短経路を求める
+        # 最短経路を求める(頂点数-1回分だけ全更新で少なくとも1点ずつ確定させる、それでもダメだったら負閉路)
         for _ in range(self.V - 1):
             for u, v, w in self.graph:
                 if dist[u] != float("inf") and dist[u] + w < dist[v]:
