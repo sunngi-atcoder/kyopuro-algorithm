@@ -3,4 +3,4 @@
 ans=pow(a,b,p)
 
 #フェルマーの小定理
-#a≡0(modp)かつpが素数の時、a^(p-1)≡1(modp)
+#not( a≡0(modp) ) かつpが素数の時、a^(p-1)≡1(modp)
