@@ -1,0 +1,6 @@
+#pythonならpowで繰り返し2乗法できる
+#aのb乗のmodpをとる(計算量log(b))
+ans=pow(a,b,p)
+
+#フェルマーの小定理
+#a≡0(modp)かつpが素数の時、a^(p-1)≡1(modp)
