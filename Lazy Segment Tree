@@ -12,9 +12,9 @@ min_left(r,f)
 #遅延配列は遅延してる操作を保持している、値配列と次元が違うのも当然
 from atcoder.lazysegtree import LazySegTree
 A ='元のリスト'
-
+mod=998244353
 def func(a, b):
-  return (a + b) % mod
+    return (a + b) % mod
 e = 0
 
 #mappingは遅延している操作を値に反映させる
@@ -29,6 +29,8 @@ _id = (1, 0)
 Lz= LazySegTree(func, e, mapping, composition, _id, A)
 #lからrにa倍して+b
 Lz.apply(l,r+1, (a,b))
+
+
 
 #範囲全体に+xするセグ木(もうライブラリ持ってるけど)#########################
 from atcoder.lazysegtree import LazySegTree
