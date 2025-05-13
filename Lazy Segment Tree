@@ -17,7 +17,7 @@ def func(a, b):
     return (a + b) % mod
 e = 0
 
-#mappingは遅延している操作を値に反映させる
+#mappingは遅延している操作を値に反映させる、luが操作、ddが値
 def mapping(lu, dd):
     return (dd * lu[0] + lu[1]) % mod
 #compositionは遅延している操作を下に反映させ遅延を解消するときに、元の操作と新たな操作を合成する
