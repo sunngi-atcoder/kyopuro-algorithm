@@ -66,3 +66,40 @@ class SegTree:
             l >>= 1
             r >>= 1
         return res
+
+
+
+#ACLを使うやり方########################################################################################
+#大きい方から2番目の数の個数を計算
+from atcoder.segtree import SegTree
+'''
+一点更新set(p,x)   indexpをxにする
+一点取得get(p)     indexpを取得する
+範囲取得prod(l,r)  l~r-1までのfuncをとる
+全範囲取得allprod()
+にぶたんはmax_right(l,f)やmax_left(r,f)がある
+'''
+#二つの値の合成
+def func(a,b):
+    #値
+    val=set([])
+    for i,k in a:
+        val.add(i)
+    for i,k in b:
+        val.add(i)
+    val=list(set(val))
+    K=[0 for i in range(len(val))]
+    for i,k in a:
+        K[val.index(i)]+=k
+    for i,k in b:
+        K[val.index(i)]+=k
+    So=[[val[i],K[i]] for i in range(len(val))]
+    So.sort(reverse=True)
+    So.append([0,0])
+    return [So[0],So[1]]
+
+#単位元、これは上のセルの初期値になる
+e=[[0,0],[0,0]]
+#Vは元のリスト
+Seg=SegTree(func,e,V)
+
