@@ -1,0 +1,99 @@
+N=0
+
+
+#深さ優先探索
+import sys
+sys.setrecursionlimit(1200000)
+# 深さ優先探索を行う関数（pos は現在位置、visited[x] は頂点 x が青色かどうかを表す真偽値）
+def dfs(pos,G,visited):
+    visited[pos]=True
+    for i in G[pos]:
+        if visited[i]==False:
+            dfs(i,G,visited)
+
+
+
+
+#マス目の幅優先探索
+#逆やった方がいいねぇ
+H='tate'
+W='yoko'
+S='.と#とかのリスト'
+startx,starty='スタート時点の座標'
+def BFS(x,y,c):
+    global Q
+    if 0<=x<=H-1 and 0<=y<=W-1:
+        if S[x][y]=='.':
+            if c<cost[x][y]:
+                cost[x][y]=c
+                Q.append((x,y))
+Q=[]
+#コストのリストも二次元にする
+#10**5はH*Wマス目の数によって変える
+cost=[[100000 for i in range(W)] for j in range(H)]
+BFS(startx,starty,0)
+for x,y in Q:
+    BFS(x-1,y,cost[x][y]+1)
+    BFS(x+1,y,cost[x][y]+1)
+    BFS(x,y+1,cost[x][y]+1)
+    BFS(x,y-1,cost[x][y]+1)
+#こっちの方がいいかもかも...
+#先にcost更新で計算量減る
+Q.append((startx,starty))
+dire=[[0,1],[0,-1],[1,0],[-1,0]]
+for x,y in Q:
+    for px,py in dire:
+        nx,ny=x+px,y+py
+        if 0<=nx<H and 0<=ny<W:
+            if cost[nx][ny]>cost[x][y]+1 and S[nx][ny]=='.':
+                cost[nx][ny]=cost[x][y]+1
+                Q.append((nx,ny))
+
+
+#リスト全体に処理
+#これ鬼速い
+data1=[i for i in range(10**5)]
+for i in range(2*10**5):
+    data1=list(map(lambda x:x*-1,data1))
+
+
+
+
+
+#普通の幅優先探索
+from collections import deque
+G='隣接リスト'
+dist=[-1]*(N+1)
+dist[1]=0
+Q=deque()
+Q.append(1)
+while len(Q)>=1:
+    pos=Q.popleft()#キューQの先頭要素を取り除き、その値をposに代入する
+    for nex in G[pos]:
+        if dist[nex] == -1:
+            dist[nex]=dist[pos]+1
+            Q.append(nex)
+# 頂点 1 から各頂点までの最短距離を出力
+for i in range(1,N+1):
+    print(dist[i])
+
+#A,B=map(int,input().split())
+#A=list(map(int,input().split()))
+#A=[list(map(int,input().split())) for i in range(N)]
+#A=[input() for i in range(N)]
+
+
+#LIS
+import bisect
+def LIS_bs(nums):
+    A = []
+    for x in nums:
+        i = bisect.bisect_left(A, x)
+        if i == len(A):
+            A.append(x)
+        else:
+            A[i] = x
+    return A
+
+L=[1,2,3,5,3,5,6]
+print(LIS_bs(L))
