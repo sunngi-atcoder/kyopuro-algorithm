@@ -1,3 +1,5 @@
+#このコードでは、0~V-1までの全頂点が連結になるようにしている
+#1indexにしたり連結な木じゃなくてもよくしたいなら変更は楽
 #閉路にならない範囲で、辺のコストの小さい方から、最小全域木に追加していく
 #　Kruskal法のアルゴリズムの本体
 def kruskal(Edges, V):
@@ -23,8 +25,13 @@ def kruskal(Edges, V):
             ans += w
             uf.unite(From, To)
     
-    return ans
+    #一致判定はここ！！！！！！！
+    #0indexか1indexか迷ったかここいじる
+    for i in range(V):
+        if uf.isSame(0,i)==False:
+            return float('inf')
 
+    return ans
 #=======以下、Union-Find木 各頂点の管理に利用===============
 class UnionFind():
     def __init__(self, n):
