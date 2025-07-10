@@ -1,3 +1,4 @@
+#連結にできない場合はfloat('inf')を返すようにしている(1-index)
 import heapq
 #プリム法、最小全域木の木のコストを調べる
 def prim(G):
@@ -29,4 +30,6 @@ def prim(G):
                 continue
 
             heapq.heappush(que, (cost_nxt, nxt))
+    if used.count(1)!=V-1:
+        return float('inf')
     return ans
