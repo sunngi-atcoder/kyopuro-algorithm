@@ -1,0 +1,43 @@
+#区間更新クエリ、区間合計(mod998)取得クエリ対応遅延セグ木
+'''
+set(p,x)でp番目をxにする      (1点更新)
+get(p)でp番目の値を取得        (1点取得)
+prod(l,r)でfunc([l:r])を得る (範囲取得)
+all_prod()                  (全範囲取得)
+apply(l,r,f)で[l:r]にfを作用させる(範囲更新)
+
+max_right(l,f)でlからrまでの取得値がfを満たすような最大のrを返す
+min_left(r,f)
+'''
+from atcoder.lazysegtree import LazySegTree
+mod=998244353
+
+def func(a, b):
+    if a[1]==-1:
+        return b
+    if b[1]==-1:
+        return a
+    return [(a[0] + b[0]) % mod,a[1],b[2]]
+
+#値,l,r
+e = [0,-1,0]
+
+#区間更新のセグ木を書く
+#luが操作
+def mapping(lu, dd):
+    if lu=='no':
+        return dd
+    return [lu*(dd[2]-dd[1])%mod,dd[1],dd[2]]
+
+def composition(ue, ld):
+    if ue=='no':
+        return ld
+    return ue
+#元の値をそのままにする操作
+_id = 'no'
+
+A="元のリスト"
+for i in range(len(A)):
+    A[i]=[A[i],i,i+1]
+
+Lz= LazySegTree(func, e, mapping, composition, _id, A)
