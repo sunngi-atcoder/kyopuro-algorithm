@@ -35,7 +35,8 @@ Lz.apply(l,r+1, (a,b))
 #範囲全体に+xするセグ木(もうライブラリ持ってるけど)#########################
 from atcoder.lazysegtree import LazySegTree
 def op(a, b):
-    return 0
+    #これ0返すとバグります
+    return a+b
 e = 0
 def mapping(a, b):
     return a + b
