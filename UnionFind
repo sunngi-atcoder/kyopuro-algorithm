@@ -14,8 +14,8 @@ class unionfind:
     def ketugou(self,a,b):
         root_a=self.root(a)
         root_b=self.root(b)
-        self.hen[a]+=1
-        self.hen[b]+=1
+        self.hen[root_a]+=1
+        self.hen[root_b]+=1
         #違うグループの時のみ
         if root_a!=root_b:
             #bにくっつける
