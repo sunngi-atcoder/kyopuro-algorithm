@@ -1,3 +1,4 @@
+#ac-libraryのDSU使った方が速い
 #unionfind
 #頂点の番号＞＝１
 #uf=unionfind(N)の場合、頂点は1~N＋1まで
