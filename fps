@@ -1,0 +1,413 @@
+#chineristさんのライブラリ
+
+
+mod = 998244353
+omega = pow(3,119,mod)
+rev_omega = pow(omega,mod-2,mod)
+
+N = 2*10**5
+g1 = [1]*(N+1) # 元テーブル
+g2 = [1]*(N+1) #逆元テーブル
+inv = [1]*(N+1) #逆元テーブル計算用テーブル
+
+for i in range( 2, N + 1 ):
+    g1[i]=( ( g1[i-1] * i ) % mod )
+    inv[i]=( ( -inv[mod % i] * (mod//i) ) % mod )
+    g2[i]=( (g2[i-1] * inv[i]) % mod )
+inv[0]=0
+
+_fft_mod = 998244353
+_fft_imag = 911660635
+_fft_iimag = 86583718
+_fft_rate2 = (911660635, 509520358, 369330050, 332049552, 983190778, 123842337, 238493703, 975955924, 603855026, 856644456, 131300601,
+              842657263, 730768835, 942482514, 806263778, 151565301, 510815449, 503497456, 743006876, 741047443, 56250497, 867605899)
+_fft_irate2 = (86583718, 372528824, 373294451, 645684063, 112220581, 692852209, 155456985, 797128860, 90816748, 860285882, 927414960,
+               354738543, 109331171, 293255632, 535113200, 308540755, 121186627, 608385704, 438932459, 359477183, 824071951, 103369235)
+_fft_rate3 = (372528824, 337190230, 454590761, 816400692, 578227951, 180142363, 83780245, 6597683, 70046822, 623238099,
+              183021267, 402682409, 631680428, 344509872, 689220186, 365017329, 774342554, 729444058, 102986190, 128751033, 395565204)
+_fft_irate3 = (509520358, 929031873, 170256584, 839780419, 282974284, 395914482, 444904435, 72135471, 638914820, 66769500,
+               771127074, 985925487, 262319669, 262341272, 625870173, 768022760, 859816005, 914661783, 430819711, 272774365, 530924681)
+ 
+ 
+def _butterfly(a):
+    n = len(a)
+    h = (n - 1).bit_length()
+    len_ = 0
+    while len_ < h:
+        if h - len_ == 1:
+            p = 1 << (h - len_ - 1)
+            rot = 1
+            for s in range(1 << len_):
+                offset = s << (h - len_)
+                for i in range(p):
+                    l = a[i + offset]
+                    r = a[i + offset + p] * rot % _fft_mod
+                    a[i + offset] = (l + r) % _fft_mod
+                    a[i + offset + p] = (l - r) % _fft_mod
+                if s + 1 != (1 << len_):
+                    rot *= _fft_rate2[(~s & -~s).bit_length() - 1]
+                    rot %= _fft_mod
+            len_ += 1
+        else:
+            p = 1 << (h - len_ - 2)
+            rot = 1
+            for s in range(1 << len_):
+                rot2 = rot * rot % _fft_mod
+                rot3 = rot2 * rot % _fft_mod
+                offset = s << (h - len_)
+                for i in range(p):
+                    a0 = a[i + offset]
+                    a1 = a[i + offset + p] * rot
+                    a2 = a[i + offset + p * 2] * rot2
+                    a3 = a[i + offset + p * 3] * rot3
+                    a1na3imag = (a1 - a3) % _fft_mod * _fft_imag
+                    a[i + offset] = (a0 + a2 + a1 + a3) % _fft_mod
+                    a[i + offset + p] = (a0 + a2 - a1 - a3) % _fft_mod
+                    a[i + offset + p * 2] = (a0 - a2 + a1na3imag) % _fft_mod
+                    a[i + offset + p * 3] = (a0 - a2 - a1na3imag) % _fft_mod
+                if s + 1 != (1 << len_):
+                    rot *= _fft_rate3[(~s & -~s).bit_length() - 1]
+                    rot %= _fft_mod
+            len_ += 2
+ 
+ 
+def _butterfly_inv(a):
+    n = len(a)
+    h = (n - 1).bit_length()
+    len_ = h
+    while len_:
+        if len_ == 1:
+            p = 1 << (h - len_)
+            irot = 1
+            for s in range(1 << (len_ - 1)):
+                offset = s << (h - len_ + 1)
+                for i in range(p):
+                    l = a[i + offset]
+                    r = a[i + offset + p]
+                    a[i + offset] = (l + r) % _fft_mod
+                    a[i + offset + p] = (l - r) * irot % _fft_mod
+                if s + 1 != (1 << (len_ - 1)):
+                    irot *= _fft_irate2[(~s & -~s).bit_length() - 1]
+                    irot %= _fft_mod
+            len_ -= 1
+        else:
+            p = 1 << (h - len_)
+            irot = 1
+            for s in range(1 << (len_ - 2)):
+                irot2 = irot * irot % _fft_mod
+                irot3 = irot2 * irot % _fft_mod
+                offset = s << (h - len_ + 2)
+                for i in range(p):
+                    a0 = a[i + offset]
+                    a1 = a[i + offset + p]
+                    a2 = a[i + offset + p * 2]
+                    a3 = a[i + offset + p * 3]
+                    a2na3iimag = (a2 - a3) * _fft_iimag % _fft_mod
+                    a[i + offset] = (a0 + a1 + a2 + a3) % _fft_mod
+                    a[i + offset + p] = (a0 - a1 +
+                                         a2na3iimag) * irot % _fft_mod
+                    a[i + offset + p * 2] = (a0 + a1 -
+                                             a2 - a3) * irot2 % _fft_mod
+                    a[i + offset + p * 3] = (a0 - a1 -
+                                             a2na3iimag) * irot3 % _fft_mod
+                if s + 1 != (1 << (len_ - 1)):
+                    irot *= _fft_irate3[(~s & -~s).bit_length() - 1]
+                    irot %= _fft_mod
+            len_ -= 2
+ 
+ 
+def _convolution_naive(a, b):
+    n = len(a)
+    m = len(b)
+    ans = [0] * (n + m - 1)
+    if n < m:
+        for j in range(m):
+            for i in range(n):
+                ans[i + j] = (ans[i + j] + a[i] * b[j]) % _fft_mod
+    else:
+        for i in range(n):
+            for j in range(m):
+                ans[i + j] = (ans[i + j] + a[i] * b[j]) % _fft_mod
+    return ans
+ 
+ 
+def _convolution_fft(a, b):
+    a = a.copy()
+    b = b.copy()
+    n = len(a)
+    m = len(b)
+    z = 1 << (n + m - 2).bit_length()
+    a += [0] * (z - n)
+    _butterfly(a)
+    b += [0] * (z - m)
+    _butterfly(b)
+    for i in range(z):
+        a[i] = a[i] * b[i] % _fft_mod
+    _butterfly_inv(a)
+    a = a[:n + m - 1]
+    iz = pow(z, _fft_mod - 2, _fft_mod)
+    for i in range(n + m - 1):
+        a[i] = a[i] * iz % _fft_mod
+    return a
+ 
+def _convolution_square(a):
+    a = a.copy()
+    n = len(a)
+    z = 1 << (2 * n - 2).bit_length()
+    a += [0] * (z - n)
+    _butterfly(a)
+    for i in range(z):
+        a[i] = a[i] * a[i] % _fft_mod
+    _butterfly_inv(a)
+    a = a[:2 * n - 1]
+    iz = pow(z, _fft_mod - 2, _fft_mod)
+    for i in range(2 * n - 1):
+        a[i] = a[i] * iz % _fft_mod
+    return a
+ 
+ 
+def convolution(a, b):
+    """It calculates (+, x) convolution in mod 998244353. 
+    Given two arrays a[0], a[1], ..., a[n - 1] and b[0], b[1], ..., b[m - 1], 
+    it calculates the array c of length n + m - 1, defined by
+ 
+    >   c[i] = sum(a[j] * b[i - j] for j in range(i + 1)) % 998244353.
+ 
+    It returns an empty list if at least one of a and b are empty.
+ 
+    Constraints
+    -----------
+ 
+    >   len(a) + len(b) <= 8388609
+ 
+    Complexity
+    ----------
+ 
+    >   O(n log n), where n = len(a) + len(b).
+    """
+    n = len(a)
+    m = len(b)
+    if n == 0 or m == 0:
+        return []
+    if min(n, m) <= 0:
+        return _convolution_naive(a, b)
+    if a is b:
+        return _convolution_square(a)
+    return _convolution_fft(a, b)
+
+def poly_inverse(f,limit):
+    assert(f[0]!=0)
+    f += [0] * (limit-len(f))
+    l = len(f)
+    L = 1<<((l-1).bit_length())
+    n = L.bit_length()-1
+    f = f[:L]
+    f+=[0]*(L-len(f))
+
+    res = [pow(f[0],mod-2,mod)]
+    for i in range(1,n+1):
+        h = convolution(res,f[:2**i])[:2**i]
+        h = [(-h[i]) % mod for i in range(2**i)]
+        h[0] = (h[0]+2) % mod
+        res = convolution(res,h)[:2**i]
+    return res[:limit]
+
+def middle_poduct(f,g):
+    """
+    Σ g[j]f[i+j] を i=0,1,2,...,n-1に対して求める
+    長さ2べきの巡回畳み込みを利用
+    """
+    n,m = len(f)-len(g)+1,len(g)
+    a = f[:]
+    b = g[::-1]
+    z = 1 << (n+m-2).bit_length()
+    a += [0] * (z - (n+m-1))
+    _butterfly(a)
+    b += [0] * (z - m)
+    _butterfly(b)
+    for i in range(z):
+        a[i] = a[i] * b[i] % _fft_mod
+    _butterfly_inv(a)
+    a = a[m-1:n + m - 1]
+    iz = pow(z, _fft_mod - 2, _fft_mod)
+    for i in range(n):
+        a[i] = a[i] * iz % _fft_mod
+    return a
+
+def multipoint_evaluation(f,X):
+
+    def _convolution_fft_2pow(a,b):
+        c = a[0] * b[0] % mod
+        a = a.copy()
+        b = b.copy()
+        n = len(a) - 1
+        m = len(b) - 1
+        #assert n == m
+        z = n << 1
+        a += [0] * (z - n - 1)
+        _butterfly(a)
+        b += [0] * (z - m - 1)
+        _butterfly(b)
+        for i in range(z):
+            a[i] = a[i] * b[i] % _fft_mod
+        _butterfly_inv(a)
+        iz = pow(z, _fft_mod - 2, _fft_mod)
+        for i in range(z):
+            a[i] = a[i] * iz % _fft_mod
+        a.append((a[0]-c) % mod)
+        a[0] = c
+        return a
+
+    def parallel_middle_product(f,g,h):
+        n,m = len(f)-len(g)+1,len(g)
+        a = f[:]
+        b = g[::-1]
+        c = h[::-1]
+
+        z = 1 << (n+m-2).bit_length()
+        a += [0] * (z - (n+m-1))
+        _butterfly(a)
+        b += [0] * (z - m)
+        _butterfly(b)
+        c += [0] * (z - m)
+        _butterfly(c)
+
+        res0 = [a[i]*b[i] % _fft_mod for i in range(z)]
+        res1 = [a[i]*c[i] % _fft_mod for i in range(z)]
+        _butterfly_inv(res0)
+        _butterfly_inv(res1)
+        res0 = res0[m-1:n+m-1]
+        res1 = res1[m-1:n+m-1]
+        iz = pow(z, _fft_mod - 2, _fft_mod)
+        for i in range(n):
+            res0[i] = res0[i] * iz % _fft_mod
+            res1[i] = res1[i] * iz % _fft_mod
+        return res0 + res1
+    
+    n,m = len(f),len(X)
+
+    """
+    f(x_i) i=0,1,2,...,m-1 を求める
+    Xのvandermonde行列を掛ける感じ
+    -> Σv_k/1-xx_k を [x^n-1] まで求める問題の転置と考える
+
+    求め方 mは2べきで n=m が成り立つものとする
+    (v0,v1,v2,...,v[m-1])からスタート
+    1.v[2i],v[2i+1]をマージし、 Σv_k/1-xx_kの分子の係数をブロックごとに保持する
+    i.(1-x[i]x)のsubproductを保持すると左のブロック x 右のproduct + 右のブロック x 左の product 行列的には (右のproduct, 左のproduct)
+    last.最後に (1-x[i]x) の inv を m 次までとって := g convして終わり
+
+    逆にたどると
+    last. gとのmiddle_productをとる (gは0埋めで長さ2m-1にする)
+    i. マージされたブロックと(右のproduct,左のproduct)とのmiddle_productをとって、この順で左から結果を並べる
+    """
+
+    z = 1 << (max(n,m)-1).bit_length()
+    a = f[:] + [0] * (z-n)
+    b = X[:] + [0] * (z-m)
+
+    subproduct_tree = [[[1,-b[i]] for i in range(z)]]
+    while len(subproduct_tree[-1])!=1:
+        n = len(subproduct_tree[-1])
+        nxt = []
+        for i in range(0,n,2):
+            f,g = subproduct_tree[-1][i],subproduct_tree[-1][i+1]
+            nxt.append(_convolution_fft_2pow(f,g))
+        subproduct_tree.append(nxt)
+
+    last_poly = poly_inverse(subproduct_tree[-1][0],z)
+    a.extend([0]*(z-1))
+
+    res = middle_poduct(a,last_poly)
+    for i in range(len(subproduct_tree)-1)[::-1]:
+        block_size = len(subproduct_tree[i][0]) - 1
+        t = 0
+        for res_idx in range(0,z,2*block_size):
+            tmp_f = res[res_idx:res_idx+2*block_size]
+            res[res_idx:res_idx+2*block_size] = parallel_middle_product(tmp_f,subproduct_tree[i][t+1],subproduct_tree[i][t])
+            t += 2
+    return res[:m]
+
+
+def BM(A,L):
+    """
+    L+1項間漸化式を復元する
+    """
+    assert len(A) >= 2 * L
+
+
+    # 初期化
+    C = [1] # 求める数列
+    B = [1] # 1つ前のCの状態を保存
+    L = 0   # Cの長さ-1
+    m = 1   # ポインタ？っぽいもの
+    b = 1   # 前回のdの値
+
+
+    for n in range(len(A)):
+    
+        #d = C[0]*A[n] + C[1]*A[n-1] + ... + C[L]*A[n-L]
+        d = sum(C[i]*A[n-i] % mod for i in range(min(n,len(C)-1)+1))
+
+        if d == 0:
+            m += 1
+
+        elif 2 * L <= n:
+            T = C[:]
+            for i in range(len(B)):
+                if i+m < len(C):
+                    C[i+m] -= d * pow(b,mod-2,mod) * B[i] % mod
+                    C[i+m] %= mod
+                else:
+                    C.append(-d * pow(b,mod-2,mod) * B[i] % mod)
+
+            L = n + 1 - L
+            B = T[:]
+            b = d
+            m = 1
+
+        # ③拡張しない場合
+        else:
+            for i in range(len(B)):
+                if i+m < len(C):
+                    C[i+m] -= d * pow(b,mod-2,mod) * B[i] % mod
+                    C[i+m] %= mod
+                else:
+                    C.append(-d * pow(b,mod-2,mod) * B[i] % mod)
+            m += 1   
+    
+    return C
+
+
+def bostan_mori(P,Q,N):
+    """
+    [x^N]P(x)/Q(x)を求める
+    """
+    d = len(Q) - 1
+    z = 1 << (2*d).bit_length()
+    
+    iz = pow(z, _fft_mod - 2, _fft_mod)
+    while N:
+        """
+        P(x)/Q(x) = P(x)Q(-x)/Q(x)Q(-x)
+        """
+        P += [0] * (z-len(P))
+        Q += [0] * (z-len(Q))
+        _butterfly(P)
+        _butterfly(Q)
+        dft_t = Q.copy()
+        for i in range(0,z,2):
+            dft_t[i],dft_t[i^1] = dft_t[i^1],dft_t[i]
+        
+        P = [a*b % mod for a,b in zip(P,dft_t)]
+        _butterfly_inv(P)
+        Q = [a*b % mod for a,b in zip(Q,dft_t)]
+        _butterfly_inv(Q)
+
+        P = [a * iz % mod for a in P][N&1::2]
+        Q = [a * iz % mod for a in Q][0::2]
+
+        N >>= 1
+    
+    res = P[0] * pow(Q[0],mod-2,mod) % mod
+    return res
