@@ -2,7 +2,7 @@
 #dsu(頂点数)で開始
 #merge(a,b),same(a,b),leader(a),size(a)
 #groups()で全ての頂点をグループごとに分けて返してくれる
-
+from atcoder.dsu import DSU
 
 
 #unionfind
