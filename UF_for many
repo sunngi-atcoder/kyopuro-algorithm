@@ -1,4 +1,6 @@
 #連想配列を用いてdsuを実装することで、頂点数が10^6とかのdsuを何回作ったとしても作成時のコストが0
+#このコードではxが連結成分の親分であるときに、par[x]=-(xの含まれる連結成分の大きさ)
+#それ以外の時はpar[x]=xの上位の頂点のindex
 #https://atcoder.jp/contests/joi2022yo2/submissions/71221400
 from collections import defaultdict
 class dsu:
